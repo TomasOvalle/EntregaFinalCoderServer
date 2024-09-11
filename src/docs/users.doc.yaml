@@ -1,0 +1,480 @@
+components:
+  schemas: 
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          description: email con el cual el usuario se registrara
+        password:
+          type: string
+          description: contraseña del usuario que quiere registrarse
+        photo:
+          type: string
+          description: url de la foto que el usuario usará como perfil
+        role:
+          type: string
+          description: para definir los permisos según el rol
+        verify:
+          type: boolean
+          description: para definir si una cuenta fue o no verificada
+        verifyCode:
+          type: string
+          description: para definir el código de verificación de la cuenta
+      example:
+        email: tomas@coder.com
+        password: hola1234
+        photo: https://i.postimg.cc/wTgNFWhR/profile.png
+  responses:
+    Message200:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito
+        message:
+          type: string
+          description: Texto descriptivo con el éxito en la operación
+      example:
+        statusCode: 200
+        message: Verified User!
+    Message201:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito en la creación
+        message:
+          type: string
+          description: Texto descriptivo con el éxito en la creación
+      example:
+        statusCode: 201
+        message: User registered!
+    Response200one:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos
+        response:
+          type: object
+          description: Objeto con los datos del recurso solicitado          
+      example:
+        statusCode: 200
+        response:
+          email: tomas@coder.com
+          password: hola1234
+          photo: https://i.postimg.cc/wTgNFWhR/profile.png
+    Response200all:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos
+        response:
+          type: array
+          description: Array de objetos del recurso solicitado
+      example:
+        statusCode: 200
+        response:
+          - email: tomas@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+          - email: lauti@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+          - email: dani@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+    Paginate:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos paginados
+        response:
+          type: array
+          description: Array de objetos del recurso solicitado paginados y ordenados
+        info:
+          type: object
+          description: Datos de la paginación
+      example:
+        statusCode: 200
+        response:
+          - email: tomas@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+          - email: lauti@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+          - email: dani@coder.com
+            password: hola1234
+            avatar: https://i.postimg.cc/wTgNFWhR/profile.png
+        info:
+          next: null
+          prev: null
+    Error400:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por problemas del cliente
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error por parte del cliente
+      example:
+        statusCode: 400
+        message: Incomplete data on mid
+    Error401:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso de autenticación
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de autenticacion
+      example:
+        statusCode: 401
+        message: Bad auth from policies!
+    Error403:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso de autorización
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de autorizacion
+      example:
+        statusCode: 403
+        message: Forbidden from policies!
+    Error404:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por no encontrar lo solocitado
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de no encontrado el recurso
+      example:
+        statusCode: 404
+        message: Not found docs
+    Error500:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por error fatal en el servidor
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error por parte del servidor
+      example:
+        statusCode: 500
+        message: CODER API ERROR
+paths:
+  /api/sessions/register:
+    post:
+      summary: Ruta para el registro de un nuevo usuario en nuestro servidor
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Datos para poder registrar un usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: Exito en el registro de un usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Message201'
+        400:
+          description: Fracaso por datos incompletos o mal pasados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Fracaso por error fatal en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/sessions/login:
+    post:
+      summary: Ruta para el inicio de sesión de un usuario en nuestro servidor
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Datos para poder iniciar la sesión de un usuario 
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Exito en el inicio de sesión de un usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Response200one'
+        400:
+          description: Fracaso por error en los datos enviados, faltan datos o se enviaron datos erroneos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Fracaso por error fatal del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/sessions/signout:
+    post:
+      summary: Ruta para cerrar la sesión de un usuario que se encuentra en línea
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Datos para poder cerrar la sesión
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Exito en el cierre de sesión de un usuario 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Response200one'
+        400: 
+          description: Fracaso por error en el cierre de sesión 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Fracaso por error fatal del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/sessions/verify:
+    post:
+      summary: Ruta para verificar al usuario que se registra atraves de un codigo enviado al correo
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Datos para poder verificar a un usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Exito en la verificación de un usuario 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Response200one'
+        400:
+          description: Fracaso en la verificación del usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Fracaso por error fatal en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/users:
+    get:
+      summary: Ruta para obtener una lista de todos los usuarios 
+      tags:
+        - User
+      responses:
+        200:
+          description: Exito al obtener la lista de usuarios
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Response200all'
+        400:
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+    post:
+      summary: Ruta para crear un nuevo usuario
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: Datos del nuevo usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Message201'
+        400:
+          description: Error en lo datos enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/users/{uid}:
+    get:
+      summary: Ruta para obtener un usuario especifico mediante su id
+      tags:
+        - User
+      requestBody:
+        required: true
+        description: datos para buscar al usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Exito al obtener el usuario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Response200one'
+        400:
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error404'
+        500:
+          description:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+    put:
+      summary: Actualizar un usuario por su id
+      tags:
+        - User
+      parameters:
+        name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Id del usuario a actualizar
+      requestBody:
+        required: true
+        description: Datos para actualizar el usuario
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Usuario actualizado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Message200'
+        400:
+          description: Error en los datos enviados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error404'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+    delete:
+      summary: Elimina un usuario especifico por su ID
+      tags:
+      - User
+      parameters:
+        name: uid
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ID del usuario a eliminar
+      responses:
+        200:
+          description: Usuario eliminado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Message200'
+        400:
+          description: Error en la solicitud
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        404:
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error404'
+        500:
+          description: Error en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'

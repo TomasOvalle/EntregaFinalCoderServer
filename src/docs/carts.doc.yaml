@@ -1,0 +1,300 @@
+components:
+  schemas:
+    Carts:
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: cantidad del producto que añadio al carrito
+        state:
+          type: string
+          description: estado de la compra del producto 
+      example:
+        quantity: 1
+        state: "reserved"
+  responses:
+    Message200:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito
+        message:
+          type: string
+          description: Texto descriptivo con el éxito en la operación
+      example:
+        statusCode: 200
+        message: Producto añadido con exito al carrito
+    Message201:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito en la creación
+        message:
+          type: string
+          description: Texto descriptivo con el éxito en la creación
+      example:
+        statusCode: 201
+        message: Carrito creado con exito
+    Response200one:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos
+        response:
+          type: object
+          description: Objeto con los datos del recurso solicitado          
+      example:
+        statusCode: 200
+        response:
+          quantity: 1
+          state: "reserved" 
+    Response200all:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos
+        response:
+          type: array
+          description: Array de objetos del recurso solicitado
+      example:
+        statusCode: 200
+        response:
+          - quantity: 1
+            state: "reserved"
+          - quantity: 2
+            state: "paid"
+          - quantity: 3
+            state: "delivered"
+    Paginate:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al éxito devolviendo datos paginados
+        response:
+          type: array
+          description: Array de objetos del recurso solicitado paginados y ordenados
+        info:
+          type: object
+          description: Datos de la paginación
+      example:
+        statusCode: 200
+        response:
+          - quantity: 1
+            state: "reserved"
+          - quantity: 1
+            state: "reserved"
+          - quantity: 1
+            state: "reserved"
+        info:
+          next: null
+          prev: null
+    Error400:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por problemas del cliente
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error por parte del cliente
+      example:
+        statusCode: 400
+        message: Incomplete data on mid
+    Error401:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso de autenticación
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de autenticacion
+      example:
+        statusCode: 401
+        message: Bad auth from policies!
+    Error403:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso de autorización
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de autorizacion
+      example:
+        statusCode: 403
+        message: Forbidden from policies!
+    Error404:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por no encontrar lo solocitado
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error de no encontrado el recurso
+      example:
+        statusCode: 404
+        message: Not found docs
+    Error500:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          format: int64
+          description: Codigo de estado correrspondiente a la solicitud al fracaso por error fatal en el servidor
+        message:
+          type: string
+          description: Texto descriptivo con mensaje de error por parte del servidor
+      example:
+        statusCode: 500
+        message: CODER API ERROR
+paths:
+  /api/carts:
+    get:
+      summary: Ruta para consultar todos los carritos
+      tags:
+        - Carts
+      response:
+        200:
+          description: Lista de carritos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Carts'
+        404:
+          description: Fallo en la lectura de los carritos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error404'
+        500:
+          description: Error de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+    post:
+      summary: Ruta para la creación de un carrito
+      tags:
+        - Carts
+      requestBody:
+        required: true
+        description: Datos para la creación de un carrito
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carts'
+      response:
+        201:
+          description: Exito en la creación de un carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Message201'
+        400:
+          description: Fracaso por datos erroneos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Error del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+  /api/carts/{uid}:
+    put:
+      summary: Actualización de propiedades del carrito en cuestión
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: user id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Carts'
+      response:
+        200:
+          description: el carrito fue actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Carts'
+        400:
+          description:: Fracaso por datos erroneos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error400'
+        500:
+          description: Fracaso por error fatal en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
+    delete:
+      summary: eliminación de un carrito
+      tags:
+        - Carts
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: id del usuario al que pertenece el carrito
+      response:
+        200:
+          description: exito en la eliminación del carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    get:
+      summary: Ruta para la consulta de un carrito mediante el id del usuario al que pertenece
+      tags:
+        - Carts
+      response:
+        200:
+          description: Exito en la lectura del carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        404:
+          description: Fallo en la lectura del carrito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error404'
+        500:
+          description: Fracaso por error fatal en el servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error500'
