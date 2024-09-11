@@ -13,3 +13,5 @@ async function printConditions3() {
         console.log(error);
     }
 }
+
+printConditions3();

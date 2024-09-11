@@ -792,3 +792,10 @@
 [33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 18:20:11
 [33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 18:20:27
 [33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 18:26:14
+[33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 19:26:17
+[33mERROR[39m: GET /online 401 - 19:26:19 - Bad auth from poliecies!
+[33mERROR[39m: GET /online 401 - 19:26:19 - Bad auth from poliecies!
+[33mERROR[39m: GET /online 401 - 19:26:19 - Bad auth from poliecies!
+[33mERROR[39m: GET /online 401 - 19:26:19 - Bad auth from poliecies!
+[33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 19:26:26
+[33mERROR[39m: GET - /api/products/null - undefined - 11-09-2024, 19:28:06

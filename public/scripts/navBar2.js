@@ -1,4 +1,4 @@
-async function printConditions2() {
+async function printConditions3() {
     try {
         let response = await fetch("/api/sessions/online");
         response = await response.json();
@@ -14,4 +14,4 @@ async function printConditions2() {
     }
 }
 
-printConditions2();
+printConditions3();
